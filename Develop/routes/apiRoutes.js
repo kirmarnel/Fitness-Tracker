@@ -2,20 +2,7 @@ const router = require("express").Router();
 const path = require('path');
 const workouts = require('../models/workouts');
 
-//html routes
-router.get('/exercise', (req, res) => {
-  res.sendFile(path.join(__dirname, '../public/exercise.html'));
-});
 
-router.get('/stats', (req, res) => {
-  res.sendFile(path.join(__dirname, '../public/stats.html'));
-});
-
-router.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, '../public/index.html'));
-})
-
-//api routes
 router.get('/api/workouts', (req, res) => {
   workouts.aggregate([
     {
@@ -28,6 +15,7 @@ router.get('/api/workouts', (req, res) => {
   ])
 
     .then((exercise) => {
+      console.log(exercise)
       res.json(exercise);
     })
     .catch(err => {
@@ -36,8 +24,8 @@ router.get('/api/workouts', (req, res) => {
 });
 
 
-router.post('/api/workouts', ({ body }, res) => {
-  workouts.create(body)
+router.post('/api/workouts', (req, res) => {
+  workouts.create({})
     .then(exercise => {
       res.json(exercise);
     })
@@ -48,6 +36,7 @@ router.post('/api/workouts', ({ body }, res) => {
 
 
 router.put('/api/workouts/:id', (req, res) => {
+  console.log(req.body)
   workouts.updateOne(
     { _id: req.params.id },
     { $push: { exercises: req.body } }
@@ -79,10 +68,5 @@ router.get('/api/workouts/range', (req, res) => {
       res.json(err);
     });
 });
-
-
-
-
-
 
 module.exports = router
